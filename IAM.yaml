@@ -1,74 +1,93 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Metadata:
-  License: Apache-2.0
-Description: 'AWS CloudFormation Sample Template IAM_Users_Groups_and_Policies: Sample
-  template showing how to create IAM users, groups and policies. It creates a single
-  user that is a member of a users group and an admin group. The groups each have
-  different IAM policies associated with them. Note: This example also creates an
-  AWSAccessKeyId/AWSSecretKey pair associated with the new user. The example is somewhat
-  contrived since it creates all of the users and groups, typically you would be creating
-  policies, users and/or groups that contain references to existing users or groups
-  in your environment. Note that you will need to specify the CAPABILITY_IAM flag
-  when you create the stack to allow this template to execute. You can do this through
-  the AWS management console by clicking on the check box acknowledging that you understand
-  this template creates IAM resources or by specifying the CAPABILITY_IAM flag to
-  the cfn-create-stack command line tool or CreateStack API call.'
 Parameters:
-  Password:
+  CloudPassword:
     NoEcho: 'true'
     Type: String
-    Description: New account password
+    Description: Cloud User password
     MinLength: '1'
-    MaxLength: '41'
-    ConstraintDescription: the password must be between 1 and 41 characters
+    MaxLength: '15'
+  AppPassword:
+    NoEcho: 'true'
+    Type: String
+    Description: App User password
+    MinLength: '1'
+    MaxLength: '15'
+  ProdSupportPassword:
+    NoEcho: 'true'
+    Type: String
+    Description: Prod Support User password
+    MinLength: '1'
+    MaxLength: '15'
 Resources:
-  CFNUser:
+  CloudUser:
     Type: AWS::IAM::User
     Properties:
       LoginProfile:
-        Password: !Ref 'Password'
-  CFNUserGroup:
+        Password: !Ref 'CloudPassword'
+  AppUser:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'AppPassword'
+  ProdSupportUser:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'ProdSupportPassword'
+  CloudGroup:
     Type: AWS::IAM::Group
-  CFNAdminGroup:
+  AppGroup:
     Type: AWS::IAM::Group
-  Users:
+  ProdSupportGroup:
+    Type: AWS::IAM::Group
+  CloudUsers:
     Type: AWS::IAM::UserToGroupAddition
     Properties:
-      GroupName: !Ref 'CFNUserGroup'
-      Users: [!Ref 'CFNUser']
-  Admins:
+      GroupName: !Ref 'CloudGroup'
+      Users: [!Ref 'CloudUser']
+  AppUsers:
     Type: AWS::IAM::UserToGroupAddition
     Properties:
-      GroupName: !Ref 'CFNAdminGroup'
-      Users: [!Ref 'CFNUser']
-  CFNUserPolicies:
+      GroupName: !Ref 'AppGroup'
+      Users: [!Ref 'AppUser']
+  CloudUserPolicies:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: CFNUsers
+      PolicyName: CloudUsers
       PolicyDocument:
         Statement:
         - Effect: Allow
           Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
           Resource: '*'
-      Groups: [!Ref 'CFNUserGroup']
-  CFNAdminPolicies:
+      Groups: [!Ref 'CloudGroup']
+  AppUserPolicies:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: CFNAdmins
+      PolicyName: AppUser
       PolicyDocument:
         Statement:
         - Effect: Allow
           Action: cloudformation:*
           Resource: '*'
-      Groups: [!Ref 'CFNAdminGroup']
-  CFNKeys:
-    Type: AWS::IAM::AccessKey
+      Groups: [!Ref 'AppGroup']
+  ProdSupportPolicies:
+    Type: AWS::IAM::Policy
     Properties:
-      UserName: !Ref 'CFNUser'
-Outputs:
-  AccessKey:
-    Value: !Ref 'CFNKeys'
-    Description: AWSAccessKeyId of new user
-  SecretKey:
-    Value: !GetAtt [CFNKeys, SecretAccessKey]
-    Description: AWSSecretAccessKey of new user
+      PolicyName: ProdSupportUser
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: cloudformation:*
+          Resource: '*'
+      Groups: [!Ref 'ProdSupportGroup']
+#   CFNKeys:
+#     Type: AWS::IAM::AccessKey
+#     Properties:
+#       UserName: !Ref 'CFNUser'
+# Outputs:
+#   AccessKey:
+#     Value: !Ref 'CFNKeys'
+#     Description: AWSAccessKeyId of new user
+#   SecretKey:
+#     Value: !GetAtt [CFNKeys, SecretAccessKey]
+#     Description: AWSSecretAccessKey of new user
