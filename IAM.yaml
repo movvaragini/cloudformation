@@ -1,20 +1,29 @@
 Parameters:
   MyPass:
     Type: String
+  MyUser:
+    Type: String
+  MyGroup:
+    Type: String
 Resources:
   MyIAMUser:
     Type: AWS::IAM::User
     Properties:
-      UserName: !Join ["-", [ !Ref "AWS::Region", "User1" ]]
+      UserName: !Ref MyUser
       LoginProfile:
         Password: !Ref MyPass
       Groups:
-        - !Sub '${MyIAMGroup}'
-    DependsOn: MyIAMGroup
-  MyIAMGroup:
+        - !Sub '${MyIAMGroup1}'
+    DependsOn: MyIAMGroup1
+  MyIAMGroup1:
     Type: AWS::IAM::Group
     Properties:
-      GroupName: !Join ["-", [ !Ref "AWS::Region", "Group1" ]]
+      GroupName: !Ref MyGroup 
+    DependsOn: MyIAMGroup2
+  MyIAMGroup2:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Join ["-", [ !Ref "AWS::Region", "Group2" ]]
       Policies:
         - PolicyName: MyVideoPolicy
           PolicyDocument:
