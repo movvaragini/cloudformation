@@ -50,6 +50,11 @@ Resources:
     Properties:
       GroupName: !Ref 'AppGroup'
       Users: [!Ref 'AppUser']
+  ProdSupportUsers:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'ProdSupportGroup'
+      Users: [!Ref 'ProdSupportUser']
   CloudUserPolicies:
     Type: AWS::IAM::Policy
     Properties:
@@ -57,7 +62,7 @@ Resources:
       PolicyDocument:
         Statement:
         - Effect: Allow
-          Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
+          Action: ''
           Resource: '*'
       Groups: [!Ref 'CloudGroup']
   AppUserPolicies:
@@ -77,7 +82,7 @@ Resources:
       PolicyDocument:
         Statement:
         - Effect: Allow
-          Action: cloudformation:*
+          Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
           Resource: '*'
       Groups: [!Ref 'ProdSupportGroup']
 #   CFNKeys:
