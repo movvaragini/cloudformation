@@ -19,12 +19,37 @@ Parameters:
     MinLength: '1'
     MaxLength: '15'
 Resources:
-  CloudUser:
+  CloudUser1:
     Type: AWS::IAM::User
     Properties:
       LoginProfile:
         Password: !Ref 'CloudPassword'
-  AppUser:
+  CloudUser2:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'CloudPassword'
+  CloudUser3:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'CloudPassword'
+  CloudArchitect:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'CloudPassword'
+  Director:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'CloudPassword'
+  AppUser1:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'AppPassword'
+  AppUser2:
     Type: AWS::IAM::User
     Properties:
       LoginProfile:
@@ -44,12 +69,12 @@ Resources:
     Type: AWS::IAM::UserToGroupAddition
     Properties:
       GroupName: !Ref 'CloudGroup'
-      Users: [!Ref 'CloudUser']
+      Users: [!Ref 'CloudUser1', !Ref 'CloudUser2', !Ref 'CloudUser3', !Ref 'CloudArchitect', !Ref 'Director']
   AppUsers:
     Type: AWS::IAM::UserToGroupAddition
     Properties:
       GroupName: !Ref 'AppGroup'
-      Users: [!Ref 'AppUser']
+      Users: [!Ref 'AppUser1', !Ref 'AppUser2', !Ref 'Director']
   ProdSupportUsers:
     Type: AWS::IAM::UserToGroupAddition
     Properties:
@@ -85,14 +110,3 @@ Resources:
           Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
           Resource: '*'
       Groups: [!Ref 'ProdSupportGroup']
-#   CFNKeys:
-#     Type: AWS::IAM::AccessKey
-#     Properties:
-#       UserName: !Ref 'CFNUser'
-# Outputs:
-#   AccessKey:
-#     Value: !Ref 'CFNKeys'
-#     Description: AWSAccessKeyId of new user
-#   SecretKey:
-#     Value: !GetAtt [CFNKeys, SecretAccessKey]
-#     Description: AWSSecretAccessKey of new user
