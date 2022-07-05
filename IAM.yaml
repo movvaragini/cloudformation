@@ -62,7 +62,7 @@ Resources:
       PolicyDocument:
         Statement:
         - Effect: Allow
-          Action: ''
+          Action: '*'
           Resource: '*'
       Groups: [!Ref 'CloudGroup']
   AppUserPolicies:
