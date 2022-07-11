@@ -97,7 +97,7 @@ Resources:
       PolicyDocument:
         Statement:
         - Effect: Allow
-          Action: cloudformation:*
+          Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
           Resource: '*'
       Groups: [!Ref 'AppGroup']
   ProdSupportPolicies:
@@ -107,6 +107,6 @@ Resources:
       PolicyDocument:
         Statement:
         - Effect: Allow
-          Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
+          Action: cloudformation:*
           Resource: '*'
       Groups: [!Ref 'ProdSupportGroup']
